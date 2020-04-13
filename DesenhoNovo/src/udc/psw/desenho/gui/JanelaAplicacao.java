@@ -3,7 +3,9 @@ package udc.psw.desenho.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -52,11 +54,52 @@ public class JanelaAplicacao extends JFrame {
 		
 		JMenuItem mntmSalvarTxt = new JMenuItem("Salvar");
 		JMenuItem mntmLerTxt = new JMenuItem("Ler");
+		mntmSalvarTxt.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File f = fc.getSelectedFile();
+					painel.salvarTxt(f);
+				}
+			}
+		});
+		
+		mntmLerTxt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File f = fc.getSelectedFile();
+					painel.lerTxt(f);
+				}
+			}
+		});
 		mnArquivoTxt.add(mntmSalvarTxt);
 		mnArquivoTxt.add(mntmLerTxt);
 		
 		JMenuItem mntmSalvarSerial = new JMenuItem("Salvar");
 		JMenuItem mntmLerSerial = new JMenuItem("Ler");
+		mntmSalvarSerial.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File f = fc.getSelectedFile();
+					painel.salvar(f);
+				}
+			}
+		});
+		mntmLerSerial.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fc = new JFileChooser();
+				if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File f = fc.getSelectedFile();
+					painel.ler(f);
+				}
+			}
+		});
 		mnArquivoSerial.add(mntmSalvarSerial);
 		mnArquivoSerial.add(mntmLerSerial);
 		

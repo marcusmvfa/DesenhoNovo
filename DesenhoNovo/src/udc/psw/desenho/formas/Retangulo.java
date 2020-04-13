@@ -7,12 +7,13 @@ import udc.psw.desenho.formas.manipulador.ManipuladorRetangulo;
 import udc.psw.desenho.formas.manipulador.ManipuladorTriangulo;
 
 public class Retangulo implements FormaGeometrica {
+	private static final long serialVersionUID = 1L;
 	private Ponto a = null;
 	private Ponto b = null;
 	private Ponto c = null;
 	private Ponto d = null;
 	
-	private ManipuladorRetangulo manipulador = null;
+	private transient ManipuladorRetangulo manipulador = null;
 	
 	public Retangulo(){
 		a = new Ponto();

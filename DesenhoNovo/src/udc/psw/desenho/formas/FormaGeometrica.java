@@ -1,10 +1,11 @@
 package udc.psw.desenho.formas;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 
 import udc.psw.desenho.formas.manipulador.ManipuladorForma;
 
-public interface FormaGeometrica {
+public interface FormaGeometrica extends Serializable{
 
 	Ponto centro();
 	double area();

@@ -4,8 +4,18 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,30 +23,31 @@ import javax.swing.JPanel;
 import udc.psw.desenho.formas.FormaGeometrica;
 import udc.psw.desenho.formas.Linha;
 import udc.psw.desenho.formas.Circulo;
+import udc.psw.desenho.formas.FabricaFormas;
 import udc.psw.desenho.formas.Ponto;
 import udc.psw.desenho.formas.Retangulo;
 import udc.psw.desenho.formas.Triangulo;
 
-public class PainelDesenho extends JPanel implements MouseListener, MouseMotionListener{
+public class PainelDesenho extends JPanel implements MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JLabel status;
-	
+
 	private FormaGeometrica formaAtual;
-	
+
 	private int estado;
-	
+
 	private List<FormaGeometrica> listaFormas;
-	
+
 	public PainelDesenho(JLabel status) {
 		this.status = status;
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
-		
+
 		formaAtual = null;
 		listaFormas = new LinkedList<FormaGeometrica>();
 	}
-	
+
 	public void formaAtual(FormaGeometrica forma) {
 		formaAtual = forma;
 		estado = 0;
@@ -45,134 +56,206 @@ public class PainelDesenho extends JPanel implements MouseListener, MouseMotionL
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		
-		if(formaAtual != null)
+
+		if (formaAtual != null)
 			formaAtual.getManipulador().desenhar(g);
-		
-		for(FormaGeometrica f : listaFormas) {
+
+		for (FormaGeometrica f : listaFormas) {
 			f.getManipulador().desenhar(g);
 		}
 	}
-	
+
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		String msg = String.format("Mouse Arrastado em (%d; %d)", e.getX(), e.getY());
-		if(formaAtual != null)
-			msg = msg + " - desenhando " + formaAtual.getNome() + " em (" + formaAtual + ")"; 
+		if (formaAtual != null)
+			msg = msg + " - desenhando " + formaAtual.getNome() + " em (" + formaAtual + ")";
 		status.setText(msg);
-		
+
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (formaAtual != null) {
 			formaAtual.getManipulador().mover(e.getX(), e.getY());
-				listaFormas.add(formaAtual);
 			
+
 			repaint();
 		}
 		if (formaAtual != null && formaAtual.getClass().equals(Linha.class)) {
-			if(estado == 1) {
-				((Linha)formaAtual).setB(new Ponto(e.getX(), e.getY()));
+			if (estado == 1) {
+				((Linha) formaAtual).setB(new Ponto(e.getX(), e.getY()));
 				repaint();
 			}
-		}
-		else if (formaAtual != null && formaAtual.getClass().equals(Triangulo.class)) {
-			switch(estado) {
+		} else if (formaAtual != null && formaAtual.getClass().equals(Triangulo.class)) {
+			switch (estado) {
 			case 1:
-				((Triangulo)formaAtual).setB(new Ponto(e.getX(), e.getY()));
-				((Triangulo)formaAtual).setC(new Ponto(e.getX(), e.getY()));
-				repaint();
-			break;
-			case 2:
-				((Triangulo)formaAtual).setC(new Ponto(e.getX(), e.getY()));
-				repaint();
-			break;
-			}
-		}
-		else if (formaAtual != null && formaAtual.getClass().equals(Circulo.class)) {
-			if(estado == 1) {
-				((Circulo)formaAtual).setB(new Ponto(e.getX(), e.getY()));
-				repaint();
-			}
-		}
-		else if (formaAtual != null && formaAtual.getClass().equals(Retangulo.class)) {
-			switch(estado) {
-			case 1:
-				((Retangulo)formaAtual).setB(new Ponto(e.getX(), e.getY()));
-				((Retangulo)formaAtual).setC(new Ponto(e.getX(), e.getY()));
-				((Retangulo)formaAtual).setD(new Ponto(e.getX(), e.getY()));
+				((Triangulo) formaAtual).setB(new Ponto(e.getX(), e.getY()));
+				((Triangulo) formaAtual).setC(new Ponto(e.getX(), e.getY()));
 				repaint();
 				break;
-				
 			case 2:
-				((Retangulo)formaAtual).setC(new Ponto(e.getX() - ((Retangulo)formaAtual).getA().getX(), e.getY() - ((Retangulo)formaAtual).getA().getY()));
-				((Retangulo)formaAtual).setD(new Ponto(e.getX() - 4, e.getY() - 4));
+				((Triangulo) formaAtual).setC(new Ponto(e.getX(), e.getY()));
 				repaint();
 				break;
 			}
-			
+		} else if (formaAtual != null && formaAtual.getClass().equals(Circulo.class)) {
+			if (estado == 1) {
+				((Circulo) formaAtual).setB(new Ponto(e.getX(), e.getY()));
+				repaint();
+			}
+		} else if (formaAtual != null && formaAtual.getClass().equals(Retangulo.class)) {
+			switch (estado) {
+			case 1:
+				((Retangulo) formaAtual).setB(new Ponto(e.getX(), e.getY()));
+				((Retangulo) formaAtual).setC(new Ponto(e.getX(), e.getY()));
+				((Retangulo) formaAtual).setD(new Ponto(e.getX(), e.getY()));
+				repaint();
+				break;
+
+			case 2:
+				((Retangulo) formaAtual).setC(new Ponto(e.getX() - ((Retangulo) formaAtual).getA().getX(),
+						e.getY() - ((Retangulo) formaAtual).getA().getY()));
+				((Retangulo) formaAtual).setD(new Ponto(e.getX() - 4, e.getY() - 4));
+				repaint();
+				break;
+			}
+
 		}
+
 		
-		 String msg = String.format("Mouse Movido em (%d; %d)", e.getX(), e.getY());
-		 if(formaAtual != null)
-				msg = msg + " - desenhando " + formaAtual.getNome() + " em " + formaAtual;
+		String msg = String.format("Mouse Movido em (%d; %d)", e.getX(), e.getY());
+		if (formaAtual != null)
+			msg = msg + " - desenhando " + formaAtual.getNome() + " em " + formaAtual;
 		status.setText(msg);
-		
+
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(formaAtual != null) {
-			if(formaAtual.getManipulador().clicar(e.getX(), e.getY())) {
+		if (formaAtual != null) {
+			if (formaAtual.getManipulador().clicar(e.getX(), e.getY())) {
 				listaFormas.add(formaAtual);
 				formaAtual = formaAtual.clone();
 			}
 			repaint();
 		}
-		
+
 		String msg = String.format("Mouse Clicado em (%d; %d)", e.getX(), e.getY());
-		if(formaAtual != null)
+		if (formaAtual != null)
 			msg = msg + " - desenhando " + formaAtual.getNome() + " em " + formaAtual;
 		status.setText(msg);
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		String msg = String.format("Mouse Entrou no Painel em (%d; %d)", e.getX(), e.getY());
-		if(formaAtual != null)
+		if (formaAtual != null)
 			msg = msg + " - desenhando " + formaAtual.getNome() + " em " + formaAtual;
 		status.setText(msg);
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		String msg = String.format("Mouse Saiu do Painel em (%d; %d)", e.getX(), e.getY());
-		if(formaAtual != null)
+		if (formaAtual != null)
 			msg = msg + " - desenhando " + formaAtual.getNome() + " em " + formaAtual;
 		status.setText(msg);
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		String msg = String.format("Mouse Pressionado em (%d; %d)", e.getX(), e.getY());
-		if(formaAtual != null)
+		if (formaAtual != null)
 			msg = msg + " - desenhando " + formaAtual.getNome() + " em " + formaAtual;
 		status.setText(msg);
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		String msg = String.format("Mouse Soltado em (%d; %d)", e.getX(), e.getY());
-		if(formaAtual != null)
+		if (formaAtual != null)
 			msg = msg + " - desenhando " + formaAtual.getNome() + " em " + formaAtual;
 		status.setText(msg);
+
+	}
+
+	public void salvar(File file) {
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
+			
+			for(FormaGeometrica f : listaFormas) {
+				oos.writeObject(f);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
+	public void ler(File file) {
+		ObjectInputStream ois = null;
+
+		try {
+			ois = new ObjectInputStream(new FileInputStream(file));
+			listaFormas.clear();
+			FormaGeometrica formaAux = null;
+			while (true) {
+				formaAux = (FormaGeometrica) ois.readObject();
+				listaFormas.add(formaAux);
+			}
+		} catch (EOFException endOfFileException) {
+			try {
+				ois.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		repaint();
+	}
+
+	public void salvarTxt(File file) {
+		try {
+			FileWriter fw = new FileWriter(file);
+			
+			for (FormaGeometrica f : listaFormas) {
+				fw.append(f.getClass().getSimpleName() + " " + f.toString() + "\n");
+			}
+			
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public void lerTxt(File file) {
+		try {
+			Scanner sc = new Scanner(file);
+			
+			listaFormas.clear();
+			
+			FormaGeometrica formaAux = null;
+			while (sc.hasNextLine()) {
+				String line = sc.nextLine();
+				formaAux = FabricaFormas.fabricarForma(line);
+				listaFormas.add(formaAux);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		repaint();
+		
+	}
 
 }

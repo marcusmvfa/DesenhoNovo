@@ -6,11 +6,11 @@ import udc.psw.desenho.formas.manipulador.ManipuladorLinha;
 import udc.psw.desenho.formas.manipulador.ManipuladorPonto;
 
 public class Linha implements FormaGeometrica {
-	
+	private static final long serialVersionUID = 1L;
 	private Ponto a;
 	private Ponto b;
 	
-	private ManipuladorLinha manipulador = null;
+	private transient ManipuladorLinha manipulador = null;
 	
 	public Linha (Ponto a, Ponto b) {
 		this.a = a.clone();
@@ -124,7 +124,7 @@ public class Linha implements FormaGeometrica {
 	
 	@Override
 	public String toString() {
-		return String.format("(%s, %s)", a, b);
+		return String.format("[%s%s]", a, b);
 	}
 
 	@Override

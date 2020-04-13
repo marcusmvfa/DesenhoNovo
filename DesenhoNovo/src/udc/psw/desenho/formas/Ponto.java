@@ -6,11 +6,12 @@ import udc.psw.desenho.formas.manipulador.ManipuladorForma;
 import udc.psw.desenho.formas.manipulador.ManipuladorPonto;
 
 public class Ponto implements FormaGeometrica {
-	
+
+	private static final long serialVersionUID = 1L;
 	private int x;
 	private int y;
 	
-	private ManipuladorPonto manipulador = null;
+	private transient ManipuladorPonto manipulador = null;
 	
 	public Ponto(int x, int y) {
 		this.x = x;
@@ -93,7 +94,7 @@ public class Ponto implements FormaGeometrica {
 	
 	@Override
 	public String toString() {
-		return String.format("(%d, %d)", x, y);
+		return String.format("(%d; %d)", x, y);
 	}
 
 	@Override

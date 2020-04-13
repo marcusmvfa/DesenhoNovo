@@ -6,12 +6,12 @@ import udc.psw.desenho.formas.manipulador.ManipuladorPonto;
 import udc.psw.desenho.formas.manipulador.ManipuladorTriangulo;
 
 public class Triangulo implements FormaGeometrica {
-
+	private static final long serialVersionUID = 1L;
 	private Ponto a;
 	private Ponto b;
 	private Ponto c;
 	
-	private ManipuladorTriangulo manipulador = null;
+	private transient ManipuladorTriangulo manipulador = null;
 	
 	public Triangulo(Ponto a, Ponto b, Ponto c) {
 		this.a = a.clone();
@@ -108,7 +108,7 @@ public class Triangulo implements FormaGeometrica {
 	
 	@Override
 	public String toString() {
-		return String.format("(%s, %s, %s", a, b, c);
+		return String.format("[%s%s%s]", a, b, c);
 	}
 
 	@Override

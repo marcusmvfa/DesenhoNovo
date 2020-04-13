@@ -7,11 +7,11 @@ import udc.psw.desenho.formas.manipulador.ManipuladorCirculo;
 import udc.psw.desenho.formas.manipulador.ManipuladorPonto;
 
 public class Circulo implements FormaGeometrica {
-	
+	private static final long serialVersionUID = 1L;
 	private Ponto a;
 	private Ponto b;
 	
-	private ManipuladorCirculo manipulador = null;
+	private transient ManipuladorCirculo manipulador = null;
 	
 	public Circulo (Ponto a, Ponto b) {
 		this.a = a.clone();
