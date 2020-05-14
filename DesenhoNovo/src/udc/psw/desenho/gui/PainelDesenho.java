@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -22,13 +23,15 @@ import javax.swing.JPanel;
 
 import udc.psw.desenho.formas.FormaGeometrica;
 import udc.psw.desenho.formas.Linha;
+import udc.psw.desenho.AplicacaoDesenho;
 import udc.psw.desenho.formas.Circulo;
 import udc.psw.desenho.formas.FabricaFormas;
 import udc.psw.desenho.formas.Ponto;
 import udc.psw.desenho.formas.Retangulo;
+import udc.psw.desenho.formas.TipoPainel;
 import udc.psw.desenho.formas.Triangulo;
 
-public class PainelDesenho extends JPanel implements MouseListener, MouseMotionListener {
+public class PainelDesenho extends JPanel implements TipoPainel, MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JLabel status;
@@ -37,7 +40,7 @@ public class PainelDesenho extends JPanel implements MouseListener, MouseMotionL
 
 	private int estado;
 
-	private List<FormaGeometrica> listaFormas;
+	
 
 	public PainelDesenho(JLabel status) {
 		this.status = status;
@@ -45,7 +48,6 @@ public class PainelDesenho extends JPanel implements MouseListener, MouseMotionL
 		this.addMouseMotionListener(this);
 
 		formaAtual = null;
-		listaFormas = new LinkedList<FormaGeometrica>();
 	}
 
 	public void formaAtual(FormaGeometrica forma) {
@@ -60,8 +62,9 @@ public class PainelDesenho extends JPanel implements MouseListener, MouseMotionL
 		if (formaAtual != null)
 			formaAtual.getManipulador().desenhar(g);
 
-		for (FormaGeometrica f : listaFormas) {
-			f.getManipulador().desenhar(g);
+		Iterator<FormaGeometrica> it = AplicacaoDesenho.getAplicacao().getDocumento().getIterator();
+		while(it.hasNext()) {
+			it.next().getManipulador().desenhar(g);
 		}
 	}
 
@@ -135,7 +138,7 @@ public class PainelDesenho extends JPanel implements MouseListener, MouseMotionL
 	public void mouseClicked(MouseEvent e) {
 		if (formaAtual != null) {
 			if (formaAtual.getManipulador().clicar(e.getX(), e.getY())) {
-				listaFormas.add(formaAtual);
+				AplicacaoDesenho.getAplicacao().getDocumento().novaForma(formaAtual);
 				formaAtual = formaAtual.clone();
 			}
 			repaint();
@@ -184,78 +187,8 @@ public class PainelDesenho extends JPanel implements MouseListener, MouseMotionL
 
 	}
 
-	public void salvar(File file) {
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
-			
-			for(FormaGeometrica f : listaFormas) {
-				oos.writeObject(f);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+	@Override
+	public void atualizar(FormaGeometrica forma) {
+		this.repaint();		
 	}
-
-	public void ler(File file) {
-		ObjectInputStream ois = null;
-
-		try {
-			ois = new ObjectInputStream(new FileInputStream(file));
-			listaFormas.clear();
-			FormaGeometrica formaAux = null;
-			while (true) {
-				formaAux = (FormaGeometrica) ois.readObject();
-				listaFormas.add(formaAux);
-			}
-		} catch (EOFException endOfFileException) {
-			try {
-				ois.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		repaint();
-	}
-
-	public void salvarTxt(File file) {
-		try {
-			FileWriter fw = new FileWriter(file);
-			
-			for (FormaGeometrica f : listaFormas) {
-				fw.append(f.getClass().getSimpleName() + " " + f.toString() + "\n");
-			}
-			
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
-
-	public void lerTxt(File file) {
-		try {
-			Scanner sc = new Scanner(file);
-			
-			listaFormas.clear();
-			
-			FormaGeometrica formaAux = null;
-			while (sc.hasNextLine()) {
-				String line = sc.nextLine();
-				formaAux = FabricaFormas.fabricarForma(line);
-				listaFormas.add(formaAux);
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		
-		repaint();
-		
-	}
-
 }

@@ -10,6 +10,7 @@ public class Circulo implements FormaGeometrica {
 	private static final long serialVersionUID = 1L;
 	private Ponto a;
 	private Ponto b;
+	private int raio;
 	
 	private transient ManipuladorCirculo manipulador = null;
 	
@@ -39,9 +40,18 @@ public class Circulo implements FormaGeometrica {
 		return b;
 	}
 
+	public int getRaio() {
+		return raio;
+	}
+
+	public void setRaio(int x, int y) {
+		this.raio = (int) Math.sqrt((getA().getX() - x) * (getA().getX() - x) +
+									(getA().getY() - y) * (getA().getY() - y));
+	}
+
 	@Override
 	public Ponto centro() {
-		return new Ponto((a.getX()+b.getX())/2, (a.getY()+b.getY())/2);
+		return new Ponto(a.getX(), b.getY());
 	}
 
 	@Override
