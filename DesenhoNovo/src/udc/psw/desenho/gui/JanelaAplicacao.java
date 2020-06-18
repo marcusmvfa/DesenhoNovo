@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.sql.SQLException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -19,6 +20,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 
 import udc.psw.desenho.AplicacaoDesenho;
+import udc.psw.desenho.database.PontoDAO;
 import udc.psw.desenho.formas.Circulo;
 import udc.psw.desenho.formas.Linha;
 import udc.psw.desenho.formas.Ponto;
@@ -33,6 +35,8 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JTextField;
 
 public class JanelaAplicacao extends JFrame {
 
@@ -40,7 +44,7 @@ public class JanelaAplicacao extends JFrame {
 	
 	int count = 0;
 	
-	public JanelaAplicacao() {
+	public JanelaAplicacao() throws SQLException {
 		super("Aplicação de desenho com o mouse");
 		
 		ImageIcon icon = new ImageIcon("../icon-plus.png","Adicionar aba");
@@ -57,6 +61,7 @@ public class JanelaAplicacao extends JFrame {
 		getContentPane().add(status, BorderLayout.SOUTH);
 		
 		JTabbedPane tabbedPane = new JTabbedPane();
+		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
 		PainelDesenho painel = new PainelDesenho(status);
 		//getContentPane().add(painel, BorderLayout.CENTER);
@@ -79,7 +84,7 @@ public class JanelaAplicacao extends JFrame {
 		AplicacaoDesenho.getDocumento().addPainel(painelDesenhoTexto);
 //		AplicacaoDesenho.getDocumento().listaPaineis.add(painel);
 //		AplicacaoDesenho.getDocumento().listaPaineis.add(painelTexto);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
@@ -88,14 +93,12 @@ public class JanelaAplicacao extends JFrame {
 		menuBar.add(mnArquivo);
 		
 		JMenu mnTipoDisplay = new JMenu("Display");
-		mnArquivo.setMnemonic('A');
 		menuBar.add(mnTipoDisplay);
 		
 		JRadioButtonMenuItem displayDesenho = new JRadioButtonMenuItem("Desenho");
 		JRadioButtonMenuItem displayTexto = new JRadioButtonMenuItem("Texto");
 		JRadioButtonMenuItem displayDesenhoTexto = new JRadioButtonMenuItem("Desenho e Texto");
 		
-		getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
 		
 		displayDesenho.setSelected(true);
@@ -103,10 +106,6 @@ public class JanelaAplicacao extends JFrame {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if(e.getStateChange() == ItemEvent.SELECTED) {
-//					getContentPane().remove(painelTexto);
-//					getContentPane().remove(painelDesenhoTexto);
-//					getContentPane().add(painel, BorderLayout.CENTER);
-//					getContentPane().revalidate();
 					
 					tabbedPane.remove(painelTexto);
 					tabbedPane.remove(painelDesenhoTexto);
@@ -164,6 +163,9 @@ public class JanelaAplicacao extends JFrame {
 		JMenu mnArquivoSerial = new JMenu("Arquivo Serial");
 		mnArquivo.add(mnArquivoSerial);
 		
+		JMenu mnBanco = new JMenu("Banco de Dados");
+		mnArquivo.add(mnBanco);
+		
 		JMenuItem mntmSalvarTxt = new JMenuItem("Salvar");
 		JMenuItem mntmLerTxt = new JMenuItem("Ler");
 		mntmSalvarTxt.addActionListener( new ActionListener() {
@@ -172,7 +174,12 @@ public class JanelaAplicacao extends JFrame {
 				JFileChooser fc = new JFileChooser();
 				if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 					File f = fc.getSelectedFile();
-					AplicacaoDesenho.getAplicacao().getDocumento().salvarTxt(f);
+					try {
+						AplicacaoDesenho.getAplicacao().getDocumento().salvarTxt(f);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -183,7 +190,12 @@ public class JanelaAplicacao extends JFrame {
 				JFileChooser fc = new JFileChooser();
 				if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 					File f = fc.getSelectedFile();
-					AplicacaoDesenho.getAplicacao().getDocumento().lerTxt(f);
+					try {
+						AplicacaoDesenho.getAplicacao().getDocumento().lerTxt(f);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -198,7 +210,12 @@ public class JanelaAplicacao extends JFrame {
 				JFileChooser fc = new JFileChooser();
 				if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 					File f = fc.getSelectedFile();
-					AplicacaoDesenho.getAplicacao().getDocumento().salvar(f);
+					try {
+						AplicacaoDesenho.getAplicacao().getDocumento().salvar(f);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -208,12 +225,56 @@ public class JanelaAplicacao extends JFrame {
 				JFileChooser fc = new JFileChooser();
 				if(fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 					File f = fc.getSelectedFile();
-					AplicacaoDesenho.getAplicacao().getDocumento().ler(f);
+					try {
+						AplicacaoDesenho.getAplicacao().getDocumento().ler(f);
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
 		mnArquivoSerial.add(mntmSalvarSerial);
 		mnArquivoSerial.add(mntmLerSerial);
+		
+		JMenuItem mntmSalvarBanco = new JMenuItem("Salvar no Banco");
+		JMenuItem mntmLerBanco = new JMenuItem("Ler do Banco");
+		
+		
+		mntmSalvarBanco.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DatabaseDialog dataDialog;
+				try {
+					dataDialog = new DatabaseDialog("Salvar");
+					dataDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dataDialog.setVisible(true);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		mntmLerBanco.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				DatabaseDialog dataDialog;
+				try {
+					dataDialog = new DatabaseDialog("Leitura");
+					dataDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dataDialog.setVisible(true);
+//					AplicacaoDesenho.getAplicacao().getDocumento().lerBanco();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		
+		mnBanco.add(mntmSalvarBanco);
+		mnBanco.add(mntmLerBanco);
 
 		JButton botaoAba = new JButton("+ Aba");
 		menuBar.add(botaoAba);
@@ -275,6 +336,30 @@ public class JanelaAplicacao extends JFrame {
 			}
 		});
 		mnForma.add(mntmRetangulo);
+		
+		JMenu mnServer = new JMenu("Server");
+		menuBar.add(mnServer);
+		
+		JMenuItem mntmServer = new JMenuItem("Server");
+		mnServer.add(mntmServer);
+		mntmServer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mnServer.setEnabled(false);
+				mnServer.setText("Server");
+			}
+		});
+		
+		JMenuItem mntmClient = new JMenuItem("Client");
+		mnServer.add(mntmClient);
+		mntmClient.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mnServer.setEnabled(false);
+				mnServer.setText("Cliente");
+				
+			}
+		});
 	}
 	
 	public int contadorAbas() {

@@ -19,7 +19,7 @@ public class ManipuladorCirculo implements ManipuladorForma{
 	@Override
 	public void desenhar(Graphics g) {
 		g.drawOval(circulo.getA().getX(), circulo.getA().getY(),
-				(int) circulo.Raio(), (int) circulo.Raio());
+				(int) circulo.altura(), (int) circulo.altura());
 		
 	}
 
@@ -32,8 +32,7 @@ public class ManipuladorCirculo implements ManipuladorForma{
 	@Override
 	public void mover(int x, int y) {
 		if(estado == 1) {
-			//circulo.setB(new Ponto(x, y));
-			circulo.setRaio(x, y);
+			circulo.setB(new Ponto(x, y));
 		}
 		
 	}
@@ -47,9 +46,7 @@ public class ManipuladorCirculo implements ManipuladorForma{
 			estado = 1;
 			return false;
 		case 1:
-//			circulo.setB(new Ponto(x, y));
-
-			circulo.setRaio(x, y);
+			circulo.setB(new Ponto(x, y));
 			estado = 0;
 			return true;
 		}

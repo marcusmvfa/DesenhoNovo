@@ -12,6 +12,7 @@ public class Retangulo implements FormaGeometrica {
 	private Ponto b = null;
 	private Ponto c = null;
 	private Ponto d = null;
+	private Integer id;
 	
 	private transient ManipuladorRetangulo manipulador = null;
 	
@@ -233,6 +234,17 @@ public class Retangulo implements FormaGeometrica {
 			manipulador = new ManipuladorRetangulo(this);
 		
 		return manipulador;
+	}
+	
+
+	public Integer getID() {
+		return this.id;
+	}
+
+	@Override
+	public String toStringBanco() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
 

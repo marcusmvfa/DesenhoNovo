@@ -10,6 +10,7 @@ public class Triangulo implements FormaGeometrica {
 	private Ponto a;
 	private Ponto b;
 	private Ponto c;
+	private Integer id;
 	
 	private transient ManipuladorTriangulo manipulador = null;
 	
@@ -25,6 +26,7 @@ public class Triangulo implements FormaGeometrica {
 		this.c = t.c.clone();
 	}
 	
+	public Triangulo () {};
 	
 	public void setA(Ponto a) {
 		this.a = a;
@@ -36,6 +38,10 @@ public class Triangulo implements FormaGeometrica {
 
 	public void setC(Ponto c) {
 		this.c = c;
+	}
+	
+	public void setID(int id) {
+		this.id = id;
 	}
 
 	public Ponto getA() {
@@ -113,7 +119,7 @@ public class Triangulo implements FormaGeometrica {
 
 	@Override
 	public String getNome() {
-		return "Triângulo";
+		return "Triangulo";
 	}
 
 
@@ -125,4 +131,12 @@ public class Triangulo implements FormaGeometrica {
 		return manipulador;
 	}
 
+	public Integer getID() {
+		return this.id;
+	}
+
+	@Override
+	public String toStringBanco() {
+		return String.format("%d, %d, %d, %d, %d, %d", this.a.getX(), this.a.getY(), this.b.getX(), this.b.getY(), this.c.getX(), this.c.getY());
+	}
 }

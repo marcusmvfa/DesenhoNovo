@@ -10,7 +10,7 @@ public class Circulo implements FormaGeometrica {
 	private static final long serialVersionUID = 1L;
 	private Ponto a;
 	private Ponto b;
-	private int raio;
+	private Integer id;
 	
 	private transient ManipuladorCirculo manipulador = null;
 	
@@ -24,12 +24,18 @@ public class Circulo implements FormaGeometrica {
 		this.b = c.b.clone();
 	}
 	
+	public Circulo() {};
+	
 	public void setA(Ponto a) {
 		this.a = a.clone();
 	}
 	
 	public void setB(Ponto b) {
 		this.b = b.clone();
+	}
+	
+	public void setID(int id) {
+		this.id = id;
 	}
 
 	public Ponto getA() {
@@ -40,18 +46,9 @@ public class Circulo implements FormaGeometrica {
 		return b;
 	}
 
-	public int getRaio() {
-		return raio;
-	}
-
-	public void setRaio(int x, int y) {
-		this.raio = (int) Math.sqrt((getA().getX() - x) * (getA().getX() - x) +
-									(getA().getY() - y) * (getA().getY() - y));
-	}
-
 	@Override
 	public Ponto centro() {
-		return new Ponto(a.getX(), b.getY());
+		return new Ponto((a.getX()+b.getX())/2, (a.getY()+b.getY())/2);
 	}
 
 	@Override
@@ -152,6 +149,15 @@ public class Circulo implements FormaGeometrica {
 		if(manipulador == null)
 			manipulador = new ManipuladorCirculo(this);
 		return manipulador;
+	}
+	
+	public Integer getID() {
+		return this.id;
+	}
+
+	@Override
+	public String toStringBanco() {
+		return String.format("%d, %d, %d, %d", this.a.getX(), this.a.getY(), this.b.getX(), this.b.getY());
 	}
 
 }

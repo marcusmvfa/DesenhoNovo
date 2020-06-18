@@ -9,6 +9,7 @@ public class Linha implements FormaGeometrica {
 	private static final long serialVersionUID = 1L;
 	private Ponto a;
 	private Ponto b;
+	private Integer id;
 	
 	private transient ManipuladorLinha manipulador = null;
 	
@@ -16,6 +17,10 @@ public class Linha implements FormaGeometrica {
 		this.a = a.clone();
 		this.b = b.clone();
 	}
+	
+	public Linha () {
+		
+	};
 	
 	public Linha(Linha l) {
 		this.a = l.a.clone();
@@ -28,6 +33,10 @@ public class Linha implements FormaGeometrica {
 	
 	public void setB(Ponto b) {
 		this.b = b.clone();
+	}
+	
+	public void setID(int id) {
+		this.id = id;
 	}
 
 	public Ponto getA() {
@@ -139,4 +148,12 @@ public class Linha implements FormaGeometrica {
 		return manipulador;
 	}
 
+	public Integer getID() {
+		return this.id;
+	}
+
+	@Override
+	public String toStringBanco() {
+		return String.format("%d, %d, %d, %d", this.a.getX(), this.a.getY(), this.b.getX(), this.b.getY());
+	}
 }

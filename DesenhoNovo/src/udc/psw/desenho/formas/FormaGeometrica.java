@@ -15,7 +15,9 @@ public interface FormaGeometrica extends Serializable{
 	double distancia(FormaGeometrica f);
 	
 	String toString();
+	String toStringBanco();
 	String getNome();
+	Integer getID();
 	
 	Ponto getEnd();
 	Ponto getStart();

@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,9 +63,15 @@ public class PainelDesenho extends JPanel implements TipoPainel, MouseListener, 
 		if (formaAtual != null)
 			formaAtual.getManipulador().desenhar(g);
 
-		Iterator<FormaGeometrica> it = AplicacaoDesenho.getAplicacao().getDocumento().getIterator();
-		while(it.hasNext()) {
-			it.next().getManipulador().desenhar(g);
+		Iterator<FormaGeometrica> it;
+		try {
+			it = AplicacaoDesenho.getAplicacao().getDocumento().getIterator();
+			while(it.hasNext()) {
+				it.next().getManipulador().desenhar(g);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -138,7 +145,12 @@ public class PainelDesenho extends JPanel implements TipoPainel, MouseListener, 
 	public void mouseClicked(MouseEvent e) {
 		if (formaAtual != null) {
 			if (formaAtual.getManipulador().clicar(e.getX(), e.getY())) {
-				AplicacaoDesenho.getAplicacao().getDocumento().novaForma(formaAtual);
+				try {
+					AplicacaoDesenho.getAplicacao().getDocumento().novaForma(formaAtual);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				formaAtual = formaAtual.clone();
 			}
 			repaint();

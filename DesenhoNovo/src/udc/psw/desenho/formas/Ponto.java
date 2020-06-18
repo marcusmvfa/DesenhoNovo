@@ -10,6 +10,7 @@ public class Ponto implements FormaGeometrica {
 	private static final long serialVersionUID = 1L;
 	private int x;
 	private int y;
+	private Integer id;
 	
 	private transient ManipuladorPonto manipulador = null;
 	
@@ -32,6 +33,10 @@ public class Ponto implements FormaGeometrica {
 	public int getY() {
 		return y;
 	}	
+
+	public Integer getID() {
+		return this.id;
+	}
 	
 	public void setX(int x) {
 		this.x = x;
@@ -39,6 +44,10 @@ public class Ponto implements FormaGeometrica {
 
 	public void setY(int y) {
 		this.y = y;
+	}
+	
+	public void setID(int id) {
+		this.id = id;
 	}
 
 	@Override
@@ -94,8 +103,14 @@ public class Ponto implements FormaGeometrica {
 	
 	@Override
 	public String toString() {
-		return String.format("(%d; %d)", x, y);
+//		return String.format("(%d; %d)", x, y);
+		return String.format("(%d, %d)", x, y);
 	}
+	
+	public String toStringBanco() {
+		return String.format("(%d, %d, ", x, y);
+	}
+	
 
 	@Override
 	public String getNome() {
@@ -108,5 +123,4 @@ public class Ponto implements FormaGeometrica {
 			manipulador = new ManipuladorPonto(this);
 		return manipulador;
 	}
-
 }
