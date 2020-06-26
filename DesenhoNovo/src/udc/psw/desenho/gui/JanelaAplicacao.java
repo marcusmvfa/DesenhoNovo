@@ -26,6 +26,9 @@ import udc.psw.desenho.formas.Linha;
 import udc.psw.desenho.formas.Ponto;
 import udc.psw.desenho.formas.Retangulo;
 import udc.psw.desenho.formas.Triangulo;
+import udc.psw.desenho.server.Client;
+import udc.psw.desenho.server.Server;
+
 import javax.swing.BoxLayout;
 import java.awt.Component;
 import javax.swing.SwingConstants;
@@ -347,6 +350,12 @@ public class JanelaAplicacao extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				mnServer.setEnabled(false);
 				mnServer.setText("Server");
+				try {
+					AplicacaoDesenho.getAplicacao().getDocumento().startServer();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -357,7 +366,12 @@ public class JanelaAplicacao extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				mnServer.setEnabled(false);
 				mnServer.setText("Cliente");
-				
+				try {
+					AplicacaoDesenho.getAplicacao().getDocumento().startClient();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 	}

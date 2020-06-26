@@ -25,12 +25,16 @@ import udc.psw.desenho.formas.FormaGeometrica;
 import udc.psw.desenho.formas.TipoPainel;
 import udc.psw.desenho.gui.PainelDesenho;
 import udc.psw.desenho.gui.PainelTexto;
+import udc.psw.desenho.server.Client;
+import udc.psw.desenho.server.Server;
 
 public class Documento {
 	private List<FormaGeometrica> listaFormas;
 	private List<TipoPainel> listaPaineis;
 	private PainelDesenho painel;
 	private PainelTexto painelTexto;
+	private Server server;
+	public Client client;
 
 	public Documento() {
 		painel = null;
@@ -45,6 +49,24 @@ public class Documento {
 
 	public void novaForma(FormaGeometrica forma) {
 		listaFormas.add(forma);
+		atualizarPainel(forma);
+		
+		if(server != null)								//Se for null, servidor não foi iniciado
+			atualizaCliente(forma);
+		
+		else if(client != null)
+			atualizaServer(forma);
+	}
+	
+	public void novaFormaServer(FormaGeometrica forma) {		//Enviar forma para o server
+		listaFormas.add(forma);
+		//atualizaServer(forma);
+		atualizarPainel(forma);
+	}
+
+	public void novaFormaClient(FormaGeometrica forma) {		//Enviar forma para o cliente
+		listaFormas.add(forma);
+		//atualizaCliente(forma);
 		atualizarPainel(forma);
 	}
 
@@ -181,6 +203,31 @@ public class Documento {
 		for(FormaGeometrica f : listaFormas) {
 			System.out.println(f);
 		}
+	}
+	
+	public void startServer() {
+		server = new Server();
+		Thread threadServer = new Thread(server, "Server");
+		
+		threadServer.start();
+	}
+	
+	public void startClient() {
+		client = new Client();
+		Thread threadClient = new Thread(client, "Cliente");
+		
+		threadClient.start();
+	}
+	
+	public void atualizaCliente(FormaGeometrica f) {
+		if(server != null)
+			server.atualizaCliente(f);
+	}
+	
+
+	public void atualizaServer(FormaGeometrica f) {
+		if(client != null)
+			client.atualizaServer(f);
 	}
 
 }
